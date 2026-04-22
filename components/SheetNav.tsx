@@ -38,7 +38,7 @@ export function SheetNav() {
           <SheetTitle className='text-xl font-semibold underline underline-offset-4'>
             <Link href='/' className='flex items-center gap-2'>
               <BookText className='text-primary' size={32} />
-              E-Biblioteka
+              Menu
             </Link>
           </SheetTitle>
         </SheetHeader>
