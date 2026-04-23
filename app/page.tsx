@@ -1,6 +1,8 @@
 import Bestseller from "@/components/Bestseller";
 import Categories from "@/components/Categories";
 import Hero from "@/components/Hero";
+import Testimonials from "@/components/Testimonials";
+import WhyUs from "@/components/WhyUs";
 
 
 export default function Home() {
@@ -9,6 +11,8 @@ export default function Home() {
      <Hero />
      <Categories />
      <Bestseller />
+     <WhyUs />
+     <Testimonials />
     </div>
   )
 }

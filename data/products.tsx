@@ -1,3 +1,4 @@
+ 
 export const products = [
   {
     id: 1,
@@ -6,14 +7,16 @@ export const products = [
     image: "/images/karma-przysmaki-wolowe.png",
     category: "Karma",
     price: 49,
+    quantity: 1,
   },
   {
     id: 2,
     name: "Legowisko Zen",
-    description: "Ortopedyczna pianka dla maksymalnego komfortu.",
+    description: "Ortopedyczna pianka dla  komfortu.",
     image: "/images/akcesoria-legowisko-zen.png",
     category: "Akcesoria",
     price: 299,
+    quantity: 1,
   },
   {
     id: 3,
@@ -22,6 +25,7 @@ export const products = [
     image: "/images/akcesoria-szelki-explorer.png",
     category: "Akcesoria",
     price: 159,
+    quantity: 1,
   },
   {
     id: 4,
@@ -30,6 +34,7 @@ export const products = [
     image: "/images/care-zestaw-eko.png",
     category: "Pielęgnacja",
     price: 35,
+    quantity: 1,
   },
   {
     id: 5,
@@ -38,6 +43,7 @@ export const products = [
     image: "/images/karma-frolic.png",
     category: "Karma",
     price: 19,
+    quantity: 1,
   },
   {
     id: 6,
@@ -46,6 +52,7 @@ export const products = [
     image: "/images/karma-go-on.png",
     category: "Karma",
     price: 29,
+    quantity: 1,
   },
   {
     id: 7,
@@ -53,7 +60,8 @@ export const products = [
     description: "100% naturalna karma dla psów.",
     image: "/images/karma-pedigree.png",
     category: "Karma",
-    price: 29,
+    price: 29,  
+    quantity: 1,
   },
   {
     id: 8,
@@ -62,6 +70,7 @@ export const products = [
     image: "/images/toys-lis.png",
     category: "Zabawki",
     price: 39,
+    quantity: 1,
   },
   {
     id: 9,
@@ -70,5 +79,6 @@ export const products = [
     image: "/images/toys-marle.png",
     category: "Zabawki",
     price: 29,
+    quantity: 1,
   },
 ]
