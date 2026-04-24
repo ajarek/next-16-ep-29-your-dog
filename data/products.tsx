@@ -81,4 +81,22 @@ export const products = [
     price: 29,
     quantity: 1,
   },
+  {
+    id: 10,
+    name: "Karma dla psów Grandorf",
+    description: "Sucha karma z królikiem i ryżem",
+    image: "/images/karma-grandorf.png",
+    category: "Karma",
+    price: 42.99,
+    quantity: 1,
+  },
+  {
+    id: 11,
+    name: "Smakołyki Goodie Bone",
+    description: "Zabawka dla psa Goodie Bone marki KONG",
+    image: "/images/toys-goodie-bone.png",
+    category: "Zabawki",
+    price: 59,
+    quantity: 1,
+  },
 ]

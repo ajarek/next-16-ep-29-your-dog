@@ -31,6 +31,7 @@ export function Footer() {
               type='email'
               placeholder='Twój adres e-mail'
               className='bg-[#2a4a1c] border-none text-white placeholder:text-[#a5b4a0] rounded-full px-6 h-12 w-full md:w-72 focus-visible:ring-1 focus-visible:ring-[#8C6733]'
+              required
             />
             <Button type='submit' className='bg-[#8C6733] hover:bg-[#72542a] text-white rounded-full px-8 h-12 font-bold transition-colors'>
               Zapisz mnie

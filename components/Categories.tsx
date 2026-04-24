@@ -19,7 +19,7 @@ const Categories = () => {
       </div>
       <div className='w-full grid grid-cols-1 md:grid-cols-2 place-items-center gap-4'>
         <div className='relative h-130 w-full rounded-2xl overflow-hidden'>
-          <Link href='/categories/karma' className='absolute inset-0 hover:scale-105 transition-all duration-300 ease-in-out'>
+          <Link href='/shop?category=Karma' className='absolute inset-0 hover:scale-105 transition-all duration-300 ease-in-out'>
             <Image
               src='/images/category-karma.png'
               alt='Category 1'
@@ -38,7 +38,7 @@ const Categories = () => {
         </div>
         <div className='w-full grid grid-cols-2 gap-4 place-items-center '>
           <div className='relative h-63 w-full rounded-xl overflow-hidden'>
-            <Link href='/categories/toys' className='absolute inset-0 hover:scale-105 transition-all duration-300 ease-in-out'>
+            <Link href='/shop?category=Zabawki' className='absolute inset-0 hover:scale-105 transition-all duration-300 ease-in-out'>
               <Image
                 src='/images/category-toys.png'
                 alt='Category 1'
@@ -56,7 +56,7 @@ const Categories = () => {
           </div>
 
           <div className='relative h-63 w-full rounded-xl overflow-hidden'>
-            <Link href='/categories/accessories' className='absolute inset-0 hover:scale-105 transition-all duration-300 ease-in-out'>
+            <Link href='/shop?category=Akcesoria' className='absolute inset-0 hover:scale-105 transition-all duration-300 ease-in-out'>
               <Image
                 src='/images/category-accessories.png'
                 alt='Category 1'
@@ -73,7 +73,7 @@ const Categories = () => {
             </div>
           </div>
           <div className='relative h-63 w-full col-span-2 rounded-xl overflow-hidden'>
-            <Link href='/categories/care' className='absolute inset-0 hover:scale-105 transition-all duration-300 ease-in-out'>
+            <Link href='/shop?category=Pielęgnacja' className='absolute inset-0 hover:scale-105 transition-all duration-300 ease-in-out'>
               <Image
                 src='/images/category-care.png'
                 alt='Category 1'
