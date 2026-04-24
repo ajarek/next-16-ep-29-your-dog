@@ -24,10 +24,11 @@ const Bestseller = () => {
   <CardContent>
     <CardTitle className="text-xl font-bold">{product.name}</CardTitle>
     <CardDescription>{product.description}</CardDescription>
+    <p className="text-xl font-bold">{product.price.toFixed(2)} zł</p>
   </CardContent>
   <CardFooter className="flex items-center justify-center bg-transparent">
    
-      <Button variant="outline" className="w-full text-xl rounded-full  h-12 cursor-pointer hover:bg-primary hover:text-white ">Dodaj do koszyka</Button>
+     <Button  className="w-full text-xl rounded-full  h-12 cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary ">Dodaj do koszyka</Button>
     
     
   </CardFooter>
