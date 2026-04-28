@@ -28,12 +28,29 @@ import { products } from "@/data/products"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { use, useState } from "react"
+import { toast } from "sonner"
+import { useCartStore } from "@/store/cartStore"
+import { useRouter } from "next/navigation"
+import { Product } from "@/types/typeProduct"
+import { CartItem } from "@/types/typeProduct"
 
 const ShopPage = ({searchParams}: {searchParams: Promise<{ category: string } | undefined>}) => {
+  const router = useRouter()
+  const { items, addItemToCart } = useCartStore()
   const { category } = use(searchParams)as { category: string }
   const [selectedProducts, setSelectedProducts] = useState(category ? products.filter(product => product.category === category) : products)
   const [activeButton, setActiveButton] = useState<string | null>(null)
 
+  const handleAddToCart = (product: Product & CartItem) => {
+    addItemToCart({
+      ...product,
+      quantity: 1,
+    })
+    toast.success("Item added to cart")
+    setTimeout(() => {
+      router.push("/shop")
+    }, 1000)
+  }
  
   return (
     <div className='min-h-screen flex flex-col items-start justify-start px-4 md:px-8 py-20 gap-8'>
@@ -180,7 +197,7 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category: string } | 
                   </p>
                 </CardContent>
                 <CardFooter className='flex items-center justify-center bg-transparent'>
-                  <Button className='w-full text-xl rounded-full  h-12 cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary '>
+                  <Button className='w-full text-xl rounded-full  h-12 cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary ' onClick={() => handleAddToCart(product)}>
                     Dodaj do koszyka
                   </Button>
                 </CardFooter>
