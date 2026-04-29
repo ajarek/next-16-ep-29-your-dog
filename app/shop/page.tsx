@@ -42,11 +42,24 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category: string } | 
   const [activeButton, setActiveButton] = useState<string | null>(null)
 
   const handleAddToCart = (product: Product & CartItem) => {
+    if (items.some((i) => i.id === product.id)) {
+      toast("Produkt jest już w koszyku", {
+        className: "bg-red-600 text-white text-xl",
+        duration: 2000,
+        position: "top-center",
+        style: {
+          backgroundColor: "#ef4444",
+          color: "white",
+        },
+      })
+      router.push("/shop")
+      return
+    }
     addItemToCart({
       ...product,
       quantity: 1,
     })
-    toast.success("Item added to cart")
+    toast.success("Produkt został dodany do koszyka")
     setTimeout(() => {
       router.push("/shop")
     }, 1000)

@@ -10,6 +10,7 @@ const Hero = () => {
             alt='Vercel logo'
             fill
             className='object-cover'
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className='absolute inset-0 bg-linear-to-r from-foreground/40 to-transparent'></div>
         </div>

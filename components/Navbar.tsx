@@ -1,4 +1,5 @@
 "use client"
+import { useState, useEffect } from "react"
 import { ModeToggle } from "./ModeToggle"
 import Link from "next/link"
 import { SheetNav } from "./SheetNav"
@@ -9,9 +10,16 @@ import { usePathname } from "next/navigation"
 import { navLinks } from "@/data/nav-links"
 import { useCartStore } from "@/store/cartStore"
 const Navbar = () => {
+  const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
   const cartItems = useCartStore((state) => state.items)
   const lengthItems = cartItems.reduce((acc, item) => acc + item.quantity, 0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsMounted(true), 0)
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className='fixed top-0 z-50 h-16 bg-background/50 backdrop-blur-md w-full max-w-8xl mx-auto   flex justify-between items-center px-4'>
       <Link href='/' className='w-full max-w-50 flex items-center gap-2 '>
@@ -37,9 +45,11 @@ const Navbar = () => {
       <div className=' flex items-center gap-8 '>
         <Link href='/cart' className='relative flex items-center gap-2'>
           <ShoppingCart className=' size-8' />
-          <span className='absolute -top-2 -right-2 bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-xs'>
-            {lengthItems}
-          </span>
+          {isMounted && (
+            <span className='absolute -top-2 -right-2 bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-xs'>
+              {lengthItems}
+            </span>
+          )}
         </Link>
 
         <SheetNav />

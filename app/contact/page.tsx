@@ -1,3 +1,4 @@
+'use client'
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -23,8 +24,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { toast } from "sonner";
 
 export default function ContactPage() {
+
+   const handleNewsletterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const name = (e.currentTarget.elements[0] as HTMLInputElement).value
+    toast.success('Dziękujemy za wysłanie wiadomości!', {
+      description: name,
+    })
+    e.currentTarget.reset()
+  }
   return (
     <main className="container mx-auto px-4 py-16 md:py-24 max-w-6xl">
       <Breadcrumb className='mb-10'>
@@ -54,21 +65,21 @@ export default function ContactPage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 mb-24">
         {/* Form Section */}
         <div className="lg:col-span-3 bg-muted/40 dark:bg-muted/10 p-8 md:p-10 rounded-4xl">
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleNewsletterSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold tracking-widest text-primary/70 uppercase">Imię</label>
-                <Input placeholder="Jan Kowalski" className="bg-background/80 border-0 h-12 rounded-xl focus-visible:ring-1 focus-visible:ring-primary shadow-sm" />
+                <label className="text-[10px] font-bold tracking-widest  uppercase">Imię</label>
+                <Input placeholder="Jan Kowalski" className="bg-background/80 border-0 h-12 rounded-xl focus-visible:ring-1 focus-visible:ring-primary shadow-sm" required/>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold tracking-widest text-primary/70 uppercase">E-mail</label>
-                <Input type="email" placeholder="kontakt@premium.pet" className="bg-background/80 border-0 h-12 rounded-xl focus-visible:ring-1 focus-visible:ring-primary shadow-sm" />
+                <label className="text-[10px] font-bold tracking-widest  uppercase">E-mail</label>
+                <Input type="email" placeholder="kontakt@premium.pet" className="bg-background/80 border-0 h-12 rounded-xl focus-visible:ring-1 focus-visible:ring-primary shadow-sm" required />
               </div>
             </div>
             
             <div className="space-y-2">
-              <label className="text-[10px] font-bold tracking-widest text-primary/70 uppercase">Temat</label>
-              <Select>
+              <label className="text-[10px] font-bold tracking-widest  uppercase">Temat</label>
+              <Select  required>
                 <SelectTrigger className="bg-background/80 border-0 h-12 rounded-xl focus:ring-1 focus:ring-primary shadow-sm w-full">
                   <SelectValue placeholder="Zapytanie o produkt" />
                 </SelectTrigger>
@@ -82,15 +93,16 @@ export default function ContactPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-bold tracking-widest text-primary/70 uppercase">Wiadomość</label>
+              <label className="text-[10px] font-bold tracking-widest  uppercase">Wiadomość</label>
               <Textarea 
                 placeholder="Jak możemy Ci pomóc?" 
                 className="bg-background/80 border-0 rounded-xl min-h-[160px] resize-none focus-visible:ring-1 focus-visible:ring-primary shadow-sm p-4"
+                required
               />
             </div>
 
             <div>
-              <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 shadow-md transition-transform hover:scale-105 active:scale-95">
+              <Button type="submit" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 shadow-md transition-transform hover:scale-105 active:scale-95">
                 Wyślij wiadomość <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </div>
