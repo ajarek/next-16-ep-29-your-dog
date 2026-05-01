@@ -3,12 +3,14 @@ import { useState, useEffect } from "react"
 import { ModeToggle } from "./ModeToggle"
 import Link from "next/link"
 import { SheetNav } from "./SheetNav"
-import { Dog, ShoppingCart} from "lucide-react"
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
+import { Dog, LogIn, ShoppingCart, UserPlus} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 
 import { navLinks } from "@/data/nav-links"
 import { useCartStore } from "@/store/cartStore"
+import { Button } from "./ui/button"
 const Navbar = () => {
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
@@ -24,7 +26,7 @@ const Navbar = () => {
     <div className='fixed top-0 z-50 h-16 bg-background/50 backdrop-blur-md w-full max-w-8xl mx-auto   flex justify-between items-center px-4'>
       <Link href='/' className='w-full max-w-50 flex items-center gap-2 '>
         
-        <h1 className='text-xl md:text-2xl font-bold '>🐩 Pet Shop</h1>
+        <h1 className='text-lg md:text-2xl font-bold '>🐩 Pet Shop</h1>
       </Link>
 
       <div className='w-1/2 flex items-center gap-4 max-lg:hidden '>
@@ -42,7 +44,7 @@ const Navbar = () => {
           </Link>
         ))}
       </div>
-      <div className=' flex items-center gap-8 '>
+      <div className=' flex items-center gap-4 md:gap-8 '>
         <Link href='/cart' className='relative flex items-center gap-2'>
           <ShoppingCart className=' size-8' />
           {isMounted && (
@@ -51,6 +53,21 @@ const Navbar = () => {
             </span>
           )}
         </Link>
+       <Show when="signed-out">
+              <SignInButton>
+                <Button className="rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80  h-10 w-10 cursor-pointer">
+                 <LogIn className=" size-6"/> 
+                </Button>
+              </SignInButton>
+              <SignUpButton>
+                <Button className="rounded-full  text-secondary-foreground hover:bg-primary/50  h-10 w-10 cursor-pointer">
+                  <UserPlus className=" size-6"/> 
+                </Button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
 
         <SheetNav />
         <ModeToggle />

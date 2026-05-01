@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Toaster } from "sonner"
+import { ClerkProvider } from "@clerk/nextjs"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className='min-h-full flex flex-col'>
+         <ClerkProvider>
         <TooltipProvider>
         <ThemeProvider
           attribute='class'
@@ -42,13 +44,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
         <Navbar/>
-        <main className="flex-grow">
+        <main className="grow">
           {children}
         </main>
         <Footer />
         </ThemeProvider>
         </TooltipProvider>
          <Toaster />
+</ClerkProvider>
       </body>
     </html>
   )
