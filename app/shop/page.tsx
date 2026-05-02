@@ -27,29 +27,49 @@ import {
 import { products } from "@/data/products"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { use, useState, useEffect } from "react"
+import { use, useState, useMemo } from "react"
 import { toast } from "sonner"
 import { useCartStore } from "@/store/cartStore"
 import { Product } from "@/types/typeProduct"
 import { cn } from "@/lib/utils"
 
-const ShopPage = ({searchParams}: {searchParams: Promise<{ category?: string }>}) => {
+const ShopPage = ({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>
+}) => {
   const { addItemToCart } = useCartStore()
   const params = use(searchParams)
   const initialCategory = params?.category
-  
-  const [selectedProducts, setSelectedProducts] = useState(products)
-  const [activeButton, setActiveButton] = useState<string>(initialCategory || "wszystkie")
 
-  useEffect(() => {
-    if (initialCategory) {
-      setSelectedProducts(products.filter(product => product.category.toLowerCase() === initialCategory.toLowerCase()))
-      setActiveButton(initialCategory.toLowerCase())
-    } else {
-      setSelectedProducts(products)
-      setActiveButton("wszystkie")
+  const [activeButton, setActiveButton] = useState<string>(
+    initialCategory?.toLowerCase() || "wszystkie",
+  )
+  const [sortBy, setSortBy] = useState<string>("")
+  const [prevCategory, setPrevCategory] = useState(initialCategory)
+
+  if (initialCategory !== prevCategory) {
+    setPrevCategory(initialCategory)
+    setActiveButton(initialCategory?.toLowerCase() || "wszystkie")
+  }
+
+  const selectedProducts = useMemo(() => {
+    let result = products
+    if (activeButton !== "wszystkie") {
+      result = result.filter((p) => p.category.toLowerCase() === activeButton)
     }
-  }, [initialCategory])
+
+    if (sortBy) {
+      result = [...result]
+      if (sortBy === "price-asc") result.sort((a, b) => a.price - b.price)
+      else if (sortBy === "price-desc") result.sort((a, b) => b.price - a.price)
+      else if (sortBy === "name-asc")
+        result.sort((a, b) => a.name.localeCompare(b.name))
+      else if (sortBy === "name-desc")
+        result.sort((a, b) => b.name.localeCompare(a.name))
+    }
+    return result
+  }, [activeButton, sortBy])
 
   const handleAddToCart = (product: Product) => {
     addItemToCart({
@@ -60,20 +80,15 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category?: string }>}
       description: "Możesz kontynuować zakupy lub przejść do koszyka.",
       action: {
         label: "Koszyk",
-        onClick: () => window.location.href = "/cart",
+        onClick: () => (window.location.href = "/cart"),
       },
     })
   }
 
   const filterByCategory = (category: string) => {
     setActiveButton(category)
-    if (category === "wszystkie") {
-      setSelectedProducts(products)
-    } else {
-      setSelectedProducts(products.filter(p => p.category.toLowerCase() === category.toLowerCase()))
-    }
   }
- 
+
   return (
     <div className='min-h-screen flex flex-col items-start justify-start px-4 md:px-8 py-20 gap-8'>
       <Breadcrumb>
@@ -87,7 +102,12 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category?: string }>}
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Kategorie: {activeButton === "wszystkie" ? "Wszystkie" : activeButton.charAt(0).toUpperCase() + activeButton.slice(1)}</BreadcrumbPage>
+            <BreadcrumbPage>
+              Kategorie:{" "}
+              {activeButton === "wszystkie"
+                ? "Wszystkie"
+                : activeButton.charAt(0).toUpperCase() + activeButton.slice(1)}
+            </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -98,21 +118,25 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category?: string }>}
             Filtry
           </h2>
           <div className='flex flex-col gap-4 my-6'>
-            {["Wszystkie", "Akcesoria", "Zabawki", "Pielęgnacja", "Karma"].map((cat) => (
-               <Button 
-                key={cat}
-                variant={activeButton === cat.toLowerCase() ? "default" : "outline"}
-                className={cn(
-                  'h-12 text-xl px-2 rounded-md w-full cursor-pointer transition-all duration-300',
-                  activeButton === cat.toLowerCase() 
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                    : "hover:bg-primary/10 hover:text-primary"
-                )}
-                onClick={() => filterByCategory(cat.toLowerCase())}
-              >
-                {cat}
-              </Button>
-            ))}
+            {["Wszystkie", "Akcesoria", "Zabawki", "Pielęgnacja", "Karma"].map(
+              (cat) => (
+                <Button
+                  key={cat}
+                  variant={
+                    activeButton === cat.toLowerCase() ? "default" : "outline"
+                  }
+                  className={cn(
+                    "h-12 text-xl px-2 rounded-md w-full cursor-pointer transition-all duration-300",
+                    activeButton === cat.toLowerCase()
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "hover:bg-primary/10 hover:text-primary",
+                  )}
+                  onClick={() => filterByCategory(cat.toLowerCase())}
+                >
+                  {cat}
+                </Button>
+              ),
+            )}
           </div>
         </div>
 
@@ -121,16 +145,7 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category?: string }>}
             <h2 className='font-semibold text-lg tracking-wider uppercase'>
               Sortuj :
             </h2>
-            <Select
-              onValueChange={(value) => {
-                const sorted = [...selectedProducts]
-                if (value === "price-asc") sorted.sort((a, b) => a.price - b.price)
-                else if (value === "price-desc") sorted.sort((a, b) => b.price - a.price)
-                else if (value === "name-asc") sorted.sort((a, b) => a.name.localeCompare(b.name))
-                else if (value === "name-desc") sorted.sort((a, b) => b.name.localeCompare(a.name))
-                setSelectedProducts(sorted)
-              }}
-            >
+            <Select onValueChange={setSortBy}>
               <SelectTrigger className='w-[180px] cursor-pointer'>
                 <SelectValue placeholder='Najpopularniejsze' />
               </SelectTrigger>
@@ -166,7 +181,10 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category?: string }>}
                   </p>
                 </CardContent>
                 <CardFooter className='flex items-center justify-center bg-transparent'>
-                  <Button className='w-full text-xl rounded-full  h-12 cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary ' onClick={() => handleAddToCart(product)}>
+                  <Button
+                    className='w-full text-xl rounded-full  h-12 cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary '
+                    onClick={() => handleAddToCart(product)}
+                  >
                     Dodaj do koszyka
                   </Button>
                 </CardFooter>

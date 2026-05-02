@@ -20,7 +20,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Dla Twojego Psa",
-  description: "Zadbaj o zdrowie i szczęście swojego pupila z wyselekcjonowanymi produktami klasy premium. Naturalne składniki, trwałe akcesoria.",
+  description:
+    "Zadbaj o zdrowie i szczęście swojego pupila z wyselekcjonowanymi produktami klasy premium. Naturalne składniki, trwałe akcesoria.",
 }
 
 export default function RootLayout({
@@ -35,23 +36,21 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className='min-h-full flex flex-col'>
-         <ClerkProvider afterSignOutUrl="/">
-        <TooltipProvider>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='dark'
-          enableSystem
-          disableTransitionOnChange
-        >
-        <Navbar/>
-        <main className="grow">
-          {children}
-        </main>
-        <Footer />
-        </ThemeProvider>
-        </TooltipProvider>
-         <Toaster />
-</ClerkProvider>
+        <ClerkProvider afterSignOutUrl='/'>
+          <TooltipProvider>
+            <ThemeProvider
+              attribute='class'
+              defaultTheme='dark'
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Navbar />
+              <main className='grow'>{children}</main>
+              <Footer />
+            </ThemeProvider>
+          </TooltipProvider>
+          <Toaster />
+        </ClerkProvider>
       </body>
     </html>
   )

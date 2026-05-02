@@ -30,7 +30,7 @@ const Testimonials = () => {
                
                {/* Testimonial text */}
                <p className="text-base md:text-lg italic leading-relaxed text-foreground/90">
-                 "{testimonial.text}"
+                 &quot;{testimonial.text}&quot;
                </p>
                
                {/* User Avatar and Info */}
