@@ -35,7 +35,7 @@ const Navbar = () => {
             href={link.href}
             className={cn(
               "flex items-center gap-2 hover:bg-primary/10 transition-colors rounded-md px-3 py-2 text-sm font-medium uppercase tracking-wide",
-              pathname === link.href && "text-primary border-b-2 border-primary rounded-none",
+              pathname === link.href && "text-secondary border-b-2 border-secondary rounded-none",
             )}
           >
             {link.icon}
