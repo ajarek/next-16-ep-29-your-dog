@@ -24,11 +24,16 @@ import Image from "next/image"
 import { useCartStore } from "@/store/cartStore"
 import Link from "next/link"
 const rabat = 0
+const FREE_DELIVERY_THRESHOLD = 200
 
 const Cart = () => {
   const [isMounted, setIsMounted] = useState(false)
   const { items, increment, decrement, removeItemFromCart, total } =
     useCartStore()
+
+  const cartTotal = total()
+  const remainingForFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - cartTotal)
+  const progressValue = Math.min(100, (cartTotal / FREE_DELIVERY_THRESHOLD) * 100)
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 0)
@@ -69,14 +74,18 @@ const Cart = () => {
       ) : (
         <div className='w-full grid grid-cols-1 md:grid-cols-[3fr_1fr] place-items-start gap-4'>
           <div className=' w-full flex flex-col items-start gap-4 rounded-lg border-2 p-4'>
-            <div className='flex items-center gap-4'>
-              <Truck className='size-10' />
-              <div className='flex flex-col items-start gap-2'>
+            <div className='flex items-center gap-4 w-full'>
+              <Truck className='size-10 flex-shrink-0' />
+              <div className='flex flex-col items-start gap-2 w-full'>
                 <h2 className='text-lg font-semibold'>
-                  Darmowa dostawa od 200zł
+                  {remainingForFreeDelivery > 0 
+                    ? `Darmowa dostawa od ${FREE_DELIVERY_THRESHOLD}zł`
+                    : "Masz darmową dostawę!"}
                 </h2>
-                <p>Brakuje Ci tylko 42,00 zł do bezpłatnej przesyłki.</p>
-                <Progress value={50} className='mt-2 h-2 bg-red-300' />
+                {remainingForFreeDelivery > 0 && (
+                  <p>Brakuje Ci tylko {remainingForFreeDelivery.toFixed(2)} zł do bezpłatnej przesyłki.</p>
+                )}
+                <Progress value={progressValue} className='mt-2 h-2 bg-secondary' />
               </div>
             </div>
             <div className='w-full flex flex-col flex-wrap items-start gap-4'>

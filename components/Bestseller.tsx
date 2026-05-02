@@ -17,31 +17,21 @@ import { CartItem, Product } from "@/types/typeProduct"
 import { useRouter } from "next/navigation"
 
 const Bestseller = () => {
-  const router = useRouter()
-  const { addItemToCart, items } = useCartStore()
-  const handleAddToCart = (product: Product & CartItem) => {
-    if (items.some((i) => i.id === product.id)) {
-      toast("Produkt jest już w koszyku", {
-        className: "bg-red-600 text-white text-xl",
-        duration: 2000,
-        position: "top-center",
-        style: {
-          backgroundColor: "#ef4444",
-          color: "white",
-        },
-      })
-      router.push("/")
-      return
-    }
+  const { addItemToCart } = useCartStore()
+  const handleAddToCart = (product: Product) => {
     addItemToCart({
       ...product,
       quantity: 1,
     })
-    toast.success("Produkt został dodany do koszyka")
-    setTimeout(() => {
-      router.push("/shop")
-    }, 1000)
+    toast.success(`${product.name} dodany do koszyka!`, {
+      description: "Możesz kontynuować zakupy lub przejść do koszyka.",
+      action: {
+        label: "Koszyk",
+        onClick: () => window.location.href = "/cart",
+      },
+    })
   }
+
   return (
     <section className='w-full   flex flex-col items-start justify-start p-4 md:p-8 gap-8'>
       <h2 className='w-full text-center text-3xl font-bold underline underline-offset-4 '>

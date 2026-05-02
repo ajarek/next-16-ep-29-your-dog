@@ -27,42 +27,51 @@ import {
 import { products } from "@/data/products"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { use, useState } from "react"
+import { use, useState, useEffect } from "react"
 import { toast } from "sonner"
 import { useCartStore } from "@/store/cartStore"
-import { useRouter } from "next/navigation"
 import { Product } from "@/types/typeProduct"
-import { CartItem } from "@/types/typeProduct"
+import { cn } from "@/lib/utils"
 
-const ShopPage = ({searchParams}: {searchParams: Promise<{ category: string } | undefined>}) => {
-  const router = useRouter()
-  const { items, addItemToCart } = useCartStore()
-  const { category } = use(searchParams)as { category: string }
-  const [selectedProducts, setSelectedProducts] = useState(category ? products.filter(product => product.category === category) : products)
-  const [activeButton, setActiveButton] = useState<string | null>(null)
+const ShopPage = ({searchParams}: {searchParams: Promise<{ category?: string }>}) => {
+  const { addItemToCart } = useCartStore()
+  const params = use(searchParams)
+  const initialCategory = params?.category
+  
+  const [selectedProducts, setSelectedProducts] = useState(products)
+  const [activeButton, setActiveButton] = useState<string>(initialCategory || "wszystkie")
 
-  const handleAddToCart = (product: Product & CartItem) => {
-    if (items.some((i) => i.id === product.id)) {
-      toast("Produkt jest już w koszyku", {
-        className: "bg-red-600 text-white text-xl",
-        duration: 2000,
-        position: "top-center",
-        style: {
-          backgroundColor: "#ef4444",
-          color: "white",
-        },
-      })
-      router.push("/shop")
-      return
+  useEffect(() => {
+    if (initialCategory) {
+      setSelectedProducts(products.filter(product => product.category.toLowerCase() === initialCategory.toLowerCase()))
+      setActiveButton(initialCategory.toLowerCase())
+    } else {
+      setSelectedProducts(products)
+      setActiveButton("wszystkie")
     }
+  }, [initialCategory])
+
+  const handleAddToCart = (product: Product) => {
     addItemToCart({
       ...product,
       quantity: 1,
     })
-    toast.success("Produkt został dodany do koszyka")
-    setTimeout(() => {
-      router.push("/shop")
-    }, 1000)
+    toast.success(`${product.name} dodany do koszyka!`, {
+      description: "Możesz kontynuować zakupy lub przejść do koszyka.",
+      action: {
+        label: "Koszyk",
+        onClick: () => window.location.href = "/cart",
+      },
+    })
+  }
+
+  const filterByCategory = (category: string) => {
+    setActiveButton(category)
+    if (category === "wszystkie") {
+      setSelectedProducts(products)
+    } else {
+      setSelectedProducts(products.filter(p => p.category.toLowerCase() === category.toLowerCase()))
+    }
   }
  
   return (
@@ -78,7 +87,7 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category: string } | 
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Kategorie: {activeButton === null ? "Wszystkie" : activeButton.charAt(0).toUpperCase() + activeButton.slice(1)}</BreadcrumbPage>
+            <BreadcrumbPage>Kategorie: {activeButton === "wszystkie" ? "Wszystkie" : activeButton.charAt(0).toUpperCase() + activeButton.slice(1)}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -88,57 +97,22 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category: string } | 
           <h2 className='font-semibold text-lg tracking-wider uppercase'>
             Filtry
           </h2>
-          <div className='flex flex-col gap-6 my-6'>
-            <Button className='h-12 text-xl px-2 rounded-md w-full cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary focus:bg-primary focus:text-primary'
-              onClick={() => {setSelectedProducts(products); setActiveButton("wszystkie")}}
-              style={{backgroundColor: activeButton === "wszystkie" ? "#8C6733" : "", color: activeButton === "wszystkie" ? "white" : ""}}
-            >
-              Wszystkie
-            </Button>
-            <Button
-              variant='outline'
-              className='h-12 text-xl px-2 rounded-md w-full cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary '
-              onClick={() => {
-                setSelectedProducts(products.filter((product) => product.category === "Akcesoria"));
-                setActiveButton("akcesoria");
-              }}
-              style={{backgroundColor: activeButton === "akcesoria" ? "#8C6733" : "", color: activeButton === "akcesoria" ? "white" : ""}}
-            >
-              Akcesoria
-            </Button>
-            <Button
-              variant='outline'
-              className='h-12 text-xl px-2 rounded-md w-full cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary '
-              onClick={() => {
-                setActiveButton("zabawki");
-                setSelectedProducts(products.filter((product) => product.category === "Zabawki"))
-              }}
-              style={{backgroundColor: activeButton === "zabawki" ? "#8C6733" : "", color: activeButton === "zabawki" ? "white" : ""}}
-            >
-              Zabawki
-            </Button>
-            <Button
-              variant='outline'
-              className='h-12 text-xl px-2 rounded-md w-full cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary '
-              onClick={() => {
-                setActiveButton("pielegnacja");
-                setSelectedProducts(products.filter((product) => product.category === "Pielęgnacja"))
-              }}
-              style={{backgroundColor: activeButton === "pielegnacja" ? "#8C6733" : "", color: activeButton === "pielegnacja" ? "white" : ""}}
-            >
-              Pielęgnacja
-            </Button>
-            <Button
-              variant='outline'
-              className='h-12 text-xl px-2 rounded-md w-full cursor-pointer dark:bg-white/90 dark:text-primary hover:dark:bg-[#8C6733] hover:dark:text-white transition-all duration-300 hover:bg-transparent hover:border-2 hover:border-primary hover:text-primary '
-              onClick={() => {
-                setActiveButton("karma");
-                setSelectedProducts(products.filter((product) => product.category === "Karma"))
-              }}
-              style={{backgroundColor: activeButton === "karma" ? "#8C6733" : "", color: activeButton === "karma" ? "white" : ""}}
-            >
-              Karma
-            </Button>
+          <div className='flex flex-col gap-4 my-6'>
+            {["Wszystkie", "Akcesoria", "Zabawki", "Pielęgnacja", "Karma"].map((cat) => (
+               <Button 
+                key={cat}
+                variant={activeButton === cat.toLowerCase() ? "default" : "outline"}
+                className={cn(
+                  'h-12 text-xl px-2 rounded-md w-full cursor-pointer transition-all duration-300',
+                  activeButton === cat.toLowerCase() 
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                    : "hover:bg-primary/10 hover:text-primary"
+                )}
+                onClick={() => filterByCategory(cat.toLowerCase())}
+              >
+                {cat}
+              </Button>
+            ))}
           </div>
         </div>
 
@@ -149,30 +123,12 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category: string } | 
             </h2>
             <Select
               onValueChange={(value) => {
-                if (value === "price-asc") {
-                  setSelectedProducts(
-                    [...selectedProducts].sort((a, b) => a.price - b.price),
-                  )
-                }
-                if (value === "price-desc") {
-                  setSelectedProducts(
-                    [...selectedProducts].sort((a, b) => b.price - a.price),
-                  )
-                }
-                if (value === "name-asc") {
-                  setSelectedProducts(
-                    [...selectedProducts].sort((a, b) =>
-                      a.name.localeCompare(b.name),
-                    ),
-                  )
-                }
-                if (value === "name-desc") {
-                  setSelectedProducts(
-                    [...selectedProducts].sort((a, b) =>
-                      b.name.localeCompare(a.name),
-                    ),
-                  )
-                }
+                const sorted = [...selectedProducts]
+                if (value === "price-asc") sorted.sort((a, b) => a.price - b.price)
+                else if (value === "price-desc") sorted.sort((a, b) => b.price - a.price)
+                else if (value === "name-asc") sorted.sort((a, b) => a.name.localeCompare(b.name))
+                else if (value === "name-desc") sorted.sort((a, b) => b.name.localeCompare(a.name))
+                setSelectedProducts(sorted)
               }}
             >
               <SelectTrigger className='w-[180px] cursor-pointer'>
@@ -188,7 +144,7 @@ const ShopPage = ({searchParams}: {searchParams: Promise<{ category: string } | 
               </SelectContent>
             </Select>
           </div>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
             {selectedProducts.map((product) => (
               <Card key={product.id} className='rounded-xl'>
                 <CardHeader className='flex items-center justify-center'>

@@ -15,62 +15,67 @@ const Navbar = () => {
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
   const cartItems = useCartStore((state) => state.items)
-  const lengthItems = cartItems.reduce((acc, item) => acc + item.quantity, 0)
+  const lengthItems = cartItems.reduce((acc, item) => acc + (item.quantity ?? 1), 0)
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsMounted(true), 0)
-    return () => clearTimeout(timer)
+    setIsMounted(true)
   }, [])
 
   return (
-    <div className='fixed top-0 z-50 h-16 bg-background/50 backdrop-blur-md w-full max-w-8xl mx-auto   flex justify-between items-center px-4'>
-      <Link href='/' className='w-full max-w-50 flex items-center gap-2 '>
-        
-        <h1 className='text-lg md:text-2xl font-bold '>🐩 Pet Shop</h1>
+    <div className='fixed top-0 z-50 h-16 bg-background/50 backdrop-blur-md w-full border-b flex justify-between items-center px-4 md:px-8'>
+      <Link href='/' className='flex items-center gap-2 group' aria-label="Strona główna">
+        <span className="text-2xl group-hover:scale-110 transition-transform duration-300">🐩</span>
+        <h1 className='text-lg md:text-2xl font-bold tracking-tight'>Pet Shop</h1>
       </Link>
 
-      <div className='w-1/2 flex items-center gap-4 max-lg:hidden '>
+      <div className='hidden lg:flex items-center gap-2'>
         {navLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}
             className={cn(
-              "flex items-center gap-2 hover: transition-colors delay-300 rounded-md p-2",
-              pathname === link.href && "underline underline-offset-8",
+              "flex items-center gap-2 hover:bg-primary/10 transition-colors rounded-md px-3 py-2 text-sm font-medium uppercase tracking-wide",
+              pathname === link.href && "text-primary border-b-2 border-primary rounded-none",
             )}
           >
             {link.icon}
-            <span className='text-sm font-medium uppercase'>{link.label}</span>
+            <span>{link.label}</span>
           </Link>
         ))}
       </div>
-      <div className=' flex items-center gap-4 md:gap-8 '>
-        <Link href='/cart' className='relative flex items-center gap-2'>
-          <ShoppingCart className=' size-8' />
-          {isMounted && (
-            <span className='absolute -top-2 -right-2 bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-xs'>
+
+      <div className='flex items-center gap-3 md:gap-6'>
+        <Link href='/cart' className='relative p-2 hover:bg-primary/10 rounded-full transition-colors' aria-label={`Koszyk (${lengthItems} produktów)`}>
+          <ShoppingCart className='size-6 md:size-7' />
+          {isMounted && lengthItems > 0 && (
+            <span className='absolute top-0 right-0 bg-primary text-primary-foreground rounded-full min-w-[20px] h-5 flex items-center justify-center text-[10px] font-bold px-1'>
               {lengthItems}
             </span>
           )}
         </Link>
-       <Show when="signed-out">
-              <SignInButton>
-                <Button className="rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80  h-10 w-10 cursor-pointer">
-                 <LogIn className=" size-6"/> 
-                </Button>
-              </SignInButton>
-              <SignUpButton>
-                <Button className="rounded-full  text-secondary-foreground hover:bg-primary/50  h-10 w-10 cursor-pointer">
-                  <UserPlus className=" size-6"/> 
-                </Button>
-              </SignUpButton>
-            </Show>
-            <Show when="signed-in">
-              <UserButton />
-            </Show>
+        
+        <div className="flex items-center gap-2">
+          <Show when="signed-out">
+            <SignInButton mode="modal">
+              <Button variant="ghost" size="icon" className="rounded-full" aria-label="Zaloguj się">
+                <LogIn className="size-5 md:size-6"/> 
+              </Button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <Button variant="ghost" size="icon" className="rounded-full" aria-label="Zarejestruj się">
+                <UserPlus className="size-5 md:size-6"/> 
+              </Button>
+            </SignUpButton>
+          </Show>
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
+        </div>
 
-        <SheetNav />
-        <ModeToggle />
+        <div className="flex items-center gap-2 border-l pl-2 md:pl-4 ml-2">
+          <SheetNav />
+          <ModeToggle />
+        </div>
       </div>
     </div>
   )

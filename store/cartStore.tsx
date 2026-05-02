@@ -18,9 +18,21 @@ export const useCartStore = create<CartState>()(
       items: [],
 
       addItemToCart: (item: Product) =>
-        set((state) => ({
-          items: [item, ...state.items],
-        })),
+        set((state) => {
+          const existingItem = state.items.find((i) => i.id === item.id)
+          if (existingItem) {
+            return {
+              items: state.items.map((i) =>
+                i.id === item.id
+                  ? { ...i, quantity: (i.quantity ?? 0) + (item.quantity ?? 1) }
+                  : i,
+              ),
+            }
+          }
+          return {
+            items: [{ ...item, quantity: item.quantity ?? 1 }, ...state.items],
+          }
+        }),
 
       removeItemFromCart: (id) =>
         set((state) => ({
